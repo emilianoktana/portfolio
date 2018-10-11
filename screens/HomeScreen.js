@@ -5,7 +5,8 @@ import {
     Slider,
     ScrollView,
     StyleSheet,
-    TouchableHighlight
+    TouchableHighlight,
+    SafeAreaView
 } from 'react-native'
 
 import { DEFAULT_COLOR, LIGHT_BLUE_COLOR, WHITE_COLOR } from '../constants/Colors'
@@ -28,34 +29,36 @@ class HomeScreen extends React.Component {
 
     render () {
         return (
-            <View style={styles.container}>
-                <ScrollView style={styles.content}>
-                    <View>
-                        <Text style={styles.bigText}>Select the risk level:</Text>
-                        <Slider
-                        minimumValue={1}
-                        maximumValue={10}
-                        style={styles.slider}
-                        step={1}
-                        value={this.props.riskState.riskLevel}
-                        onValueChange={val => { this.props.changeRiskLevel(val) }}
-                        />
-                    </View>
-                    <View>
-                        <Text style={styles.bigText}>Selected Risk: { this.props.riskState.riskLevel }</Text>
-                    </View>
-                    <View style={styles.buttonContainer}>
-                        <TouchableHighlight style={styles.button} onPress={ () => {this.setState({ showChart: !this.state.showChart })} }>
-                            <Text style={styles.buttonText}>
-                                {!this.state.showChart ? 'Show Chart' : 'Show Table'}
-                            </Text>
-                        </TouchableHighlight>
-                    </View>
-                    <View>
-                        {this.showSelectedContentDisplay()}
-                    </View>
-                </ScrollView>
-            </View>
+            <SafeAreaView style={styles.safeArea}>
+                <View style={styles.container}>
+                    <ScrollView style={styles.content}>
+                        <View>
+                            <Text style={styles.bigText}>Select the risk level:</Text>
+                            <Slider
+                            minimumValue={1}
+                            maximumValue={10}
+                            style={styles.slider}
+                            step={1}
+                            value={this.props.riskState.riskLevel}
+                            onValueChange={val => { this.props.changeRiskLevel(val) }}
+                            />
+                        </View>
+                        <View>
+                            <Text style={styles.bigText}>Selected Risk: { this.props.riskState.riskLevel }</Text>
+                        </View>
+                        <View style={styles.buttonContainer}>
+                            <TouchableHighlight style={styles.button} onPress={ () => {this.setState({ showChart: !this.state.showChart })} }>
+                                <Text style={styles.buttonText}>
+                                    {!this.state.showChart ? 'Show Chart' : 'Show Table'}
+                                </Text>
+                            </TouchableHighlight>
+                        </View>
+                        <View>
+                            {this.showSelectedContentDisplay()}
+                        </View>
+                    </ScrollView>
+                </View>
+            </SafeAreaView>
         )
     }
 }
@@ -65,10 +68,14 @@ const mapStateToProps = ({ riskState }) => ({ riskState })
 export default connect(mapStateToProps, { changeRiskLevel })(HomeScreen)
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1, 
+        backgroundColor: DEFAULT_COLOR
+    },
     container: {
         flex: 1,
         backgroundColor: DEFAULT_COLOR,
-        paddingTop: 50
+        paddingVertical: 20
     },
     slider: {
         marginVertical: 20
@@ -81,16 +88,17 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         marginVertical: 30
     },
     button: {
         backgroundColor: LIGHT_BLUE_COLOR,
         padding: 10,
-        borderRadius: 5
+        borderRadius: 5,
+        flex: 1
     },
     buttonText: {
         color: WHITE_COLOR,
-        fontSize: 16
+        fontSize: 16,
+        textAlign: 'center'
     }
 })

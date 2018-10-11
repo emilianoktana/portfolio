@@ -14,8 +14,8 @@ class RiskTable extends React.Component {
         const { riskLevel } = this.props.riskState
         let tableRows = []
 
-        for (var i = 1; i <= tableContentItems.length-1; i++) {
-            tableRows.push(<TableRow key={i} selected={(riskLevel === i) ? true : false} data={tableContentItems[i]} />)
+        for (var i = 0; i <= tableContentItems.length-1; i++) {
+            tableRows.push(<TableRow key={i} selected={(riskLevel === i+1) ? true : false} data={tableContentItems[i]} />)
         }
 
         return tableRows
