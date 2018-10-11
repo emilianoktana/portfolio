@@ -5,9 +5,6 @@ import {
 } from 'react-native'
 
 class InvestmentsScreen extends React.Component {
-    constructor (props) {
-        super(props)
-    }
 
     render () {
         return (

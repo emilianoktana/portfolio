@@ -8,18 +8,22 @@ import {
     TouchableHighlight
 } from 'react-native'
 
-import { defaultColor, lightBlueColor, whiteColor } from '../constants/Colors'
+import { DEFAULT_COLOR, LIGHT_BLUE_COLOR, WHITE_COLOR } from '../constants/Colors'
 
 import { connect } from 'react-redux'
 
 import { changeRiskLevel } from '../actions'
 
 import RiskTable from '../components/home/RiskTable'
+import Chart from '../components/home/Chart'
 
 class HomeScreen extends React.Component {
-    constructor (props) {
-        super(props)
+    state = {
+        showChart: false
+    }
 
+    showSelectedContentDisplay = () => {
+        return (!this.state.showChart) ? <RiskTable /> : <Chart />
     }
 
     render () {
@@ -41,15 +45,14 @@ class HomeScreen extends React.Component {
                         <Text style={styles.bigText}>Selected Risk: { this.props.riskState.riskLevel }</Text>
                     </View>
                     <View style={styles.buttonContainer}>
-                        <TouchableHighlight style={styles.button}>
-                            <Text style={styles.buttonText}>Show Table</Text>
-                        </TouchableHighlight>
-                        <TouchableHighlight style={styles.button}>
-                            <Text style={styles.buttonText}>Show Chart</Text>
+                        <TouchableHighlight style={styles.button} onPress={ () => {this.setState({ showChart: !this.state.showChart })} }>
+                            <Text style={styles.buttonText}>
+                                {!this.state.showChart ? 'Show Chart' : 'Show Table'}
+                            </Text>
                         </TouchableHighlight>
                     </View>
                     <View>
-                        <RiskTable />
+                        {this.showSelectedContentDisplay()}
                     </View>
                 </ScrollView>
             </View>
@@ -64,7 +67,7 @@ export default connect(mapStateToProps, { changeRiskLevel })(HomeScreen)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: defaultColor,
+        backgroundColor: DEFAULT_COLOR,
         paddingTop: 50
     },
     slider: {
@@ -82,12 +85,12 @@ const styles = StyleSheet.create({
         marginVertical: 30
     },
     button: {
-        backgroundColor: lightBlueColor,
+        backgroundColor: LIGHT_BLUE_COLOR,
         padding: 10,
         borderRadius: 5
     },
     buttonText: {
-        color: whiteColor,
+        color: WHITE_COLOR,
         fontSize: 16
     }
 })
