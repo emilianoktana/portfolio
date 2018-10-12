@@ -27,7 +27,8 @@ class InvestmentsScreen extends React.Component {
                 difference: '',
                 newAmount: 0
             })
-        })
+        }),
+        valuesForTransfer: ''
     }
 
     setCurrentAmountValue = (amount, investment) => {   
@@ -77,10 +78,39 @@ class InvestmentsScreen extends React.Component {
                 newAmount: newAmount
             }
         })
-        console.log(newValues)
+
+        const transfers = []
+
         this.setState({
-            ...this.state, tableValues: newValues
+            ...this.state, tableValues: newValues, valuesForTransfer: transfers
         })
+
+        // Items that needs to remove all the amount
+        var investmentsToRemoveAmount = newValues.filter(item => item.difference === item.currentAmount)
+        // Items that needs a transfer
+        var investmentsToAddAmount = newValues.filter(item => item.difference < 0)
+
+        /*investmentsToRemoveAmount.forEach((toRemove) => {
+            var firstInvestmentToAdd = investmentsToAddAmount[0]
+            var transferAmount = 0
+
+            while (toRemove.difference > 0) {
+                if (toRemove.difference < Math.abs(firstInvestmentToAdd.difference)) {
+                    transferAmount = toRemove.difference
+                } else {
+                    transferAmount = toRemove.difference - Math.abs(firstInvestmentToAdd.difference)
+                }
+
+                toRemove.difference = toRemove.difference - transferAmount
+                transfers.push('Transfer ' + transferAmount + ' from ' + toRemove.investment + ' to ' + firstInvestmentToAdd.investment)
+
+                if (firstInvestmentToAdd.newAmount === toRemove.difference + transferAmount) {
+                    investmentsToAddAmount.shift()
+                }
+            }
+        })*/
+        
+        console.log(transfers)
     }
 
     rebalanceAction = () => {
@@ -88,7 +118,7 @@ class InvestmentsScreen extends React.Component {
         const totalAmount = this.getTotalAmount()
         // Calculate all the differences using the ideal percentages
         this.calculateDifferencesForEnteredAmounts(totalAmount)
-        
+
     }
 
     renderIdealPercentagesRow = () => {
@@ -119,10 +149,14 @@ class InvestmentsScreen extends React.Component {
                                                 <TextInput style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
                                             </View>
                                             <View style={commonStyles.cell}>
-                                                <Text></Text>
+                                                <Text>
+                                                    {(Math.abs(this.state.tableValues[index].difference) === this.state.tableValues[index].currentAmount) ? `-${Math.abs(this.state.tableValues[index].difference)}` : `+${Math.abs(this.state.tableValues[index].difference)}` }
+                                                </Text>
                                             </View>
                                             <View style={commonStyles.cell}>
-                                                <Text></Text>
+                                                <Text>
+                                                    {this.state.tableValues[index].newAmount}
+                                                </Text>
                                             </View>
                                         </View>
                                     )
