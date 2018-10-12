@@ -31,31 +31,68 @@ class InvestmentsScreen extends React.Component {
     }
 
     setCurrentAmountValue = (amount, investment) => {   
-        console.log(amount)
-        /*const newValues = this.state.tableValues.map(item => {
+        const newValues = this.state.tableValues.map(item => {
             if (item.investment === investment) {
                 return {
                     investment: item.investment,
-                    currentAmount: parseInt(amount),
+                    currentAmount: parseFloat(amount),
                     difference: item.difference,
                     newAmount: item.newAmount
                 }
             }
             return { ...item }
         })
+    
         this.setState({
             ...this.state, tableValues: newValues
-        })*/
+        })
+    }
+
+    getTotalAmount = () => {
+        let totalAmount = 0
+        this.state.tableValues.forEach((element) => {
+            totalAmount += element.currentAmount
+        })
+        return totalAmount
+    }
+
+    calculateDifferencesForEnteredAmounts = (totalAmount) => {
+        const newValues = this.state.tableValues.map((item, index) => {
+            var currentPercentage = (item.currentAmount * 100) / totalAmount
+            var idealPercentage = investmentsData.risks[this.props.riskState.riskLevel][index]
+            var difference = 0
+
+            if (idealPercentage > 0) {
+                difference = (idealPercentage * item.currentAmount) / currentPercentage
+            } else {
+                difference = item.currentAmount
+            }
+            
+            return {
+                investment: item.investment,
+                currentAmount: item.currentAmount,
+                difference: difference,
+                newAmount: item.newAmount
+            }
+        })
+
+        this.setState({
+            ...this.state, tableValues: newValues
+        })
+    }
+
+    rebalanceAction = () => {
+        // Get the total amount
+        const totalAmount = this.getTotalAmount()
+        // Calculate all the differences using the ideal percentages
+        this.calculateDifferencesForEnteredAmounts(totalAmount)
+        
     }
 
     renderIdealPercentagesRow = () => {
         return (
             <TableRow data={investmentsData.risks[this.props.riskState.riskLevel]}/>
         )
-    }
-
-    rebalanceAction = () => {
-        console.log(this.state)
     }
 
     render () {
@@ -77,7 +114,7 @@ class InvestmentsScreen extends React.Component {
                                         <View key={index} style={commonStyles.containerCell}>
                                             <View style={commonStyles.cell}>
                                                 <Text style={commonStyles.smallText}>{ val }</Text>
-                                                <TextInput style={styles.textInput} onChange={(text) => { this.setCurrentAmountValue(text, val) }} />
+                                                <TextInput style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
                                             </View>
                                             <View style={commonStyles.cell}>
                                                 <Text></Text>
