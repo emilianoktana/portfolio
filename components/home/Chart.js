@@ -7,47 +7,16 @@ import ChartView from 'react-native-highcharts'
 import { connect } from 'react-redux'
 
 class Chart extends React.Component {
-    
-    /*render () {
-        const chart_wh = 250
-        const { riskLevel } = this.props.riskState
-        const series = investmentsData.risks[riskLevel]
-        const sliceColor = ['#F44336','#2196F3','#FFEB3B', '#4CAF50', '#FF9800']
 
-        return (
-            <View>
-                <PieChart
-                    chart_wh={chart_wh}
-                    series={series}
-                    sliceColor={sliceColor}
-                    doughnut={true}
-                    coverRadius={0.45}
-                    coverFill={'#FFF'}
-                />
-                <View>
-                    <Text>References</Text>
-                    
-                </View>
-            </View>
-        )
-    }*/
     render () {
         const { riskLevel } = this.props.riskState
-    
-        var Highcharts='Highcharts'
 
-        var conf = {
+        const chartConfig = {
                 chart: {
-                    type: 'pie',
-                    animation: Highcharts.svg,
-                    marginRight: 10
+                    type: 'pie'
                 },
                 title: {
                     text: 'Chart values'
-                },
-                xAxis: {
-                    type: 'datetime',
-                    tickPixelInterval: 150
                 },
                 plotOptions: {
                     pie: {
@@ -65,7 +34,14 @@ class Chart extends React.Component {
                 },
                 series: [{
                     name: 'Risk Percentage',
-                    innerSize: '40%',
+                    innerSize: '30%',
+                    animation: {
+                        duration: 500,
+                    },
+                    dataLabels: {
+                        enabled: true,
+                        y: -10
+                    },
                     data: (function () {
                         let data = []
                         const values = investmentsData.risks[riskLevel-1]
@@ -90,7 +66,7 @@ class Chart extends React.Component {
         }
 
         return (
-            <ChartView style={{height:300}} config={conf} options={options}></ChartView>
+            <ChartView style={{ height:500 }} config={chartConfig} options={options} />
         )
     }
 }

@@ -5,7 +5,7 @@ import investmentsData from '../../investmentsData'
 
 import { connect } from 'react-redux'
 
-import { TableRow } from './TableRow'
+import { TableRow } from '../common/TableRow'
 
 class RiskTable extends React.Component {
 

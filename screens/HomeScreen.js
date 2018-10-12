@@ -10,6 +10,7 @@ import {
 } from 'react-native'
 
 import { DEFAULT_COLOR, LIGHT_BLUE_COLOR, WHITE_COLOR } from '../constants/Colors'
+import { commonStyles } from '../constants/CommonStyles'
 
 import { connect } from 'react-redux'
 
@@ -29,11 +30,11 @@ class HomeScreen extends React.Component {
 
     render () {
         return (
-            <SafeAreaView style={styles.safeArea}>
-                <View style={styles.container}>
-                    <ScrollView style={styles.content}>
+            <SafeAreaView style={commonStyles.safeArea}>
+                <View style={commonStyles.container}>
+                    <ScrollView style={commonStyles.content}>
                         <View>
-                            <Text style={styles.bigText}>Select the risk level:</Text>
+                            <Text style={commonStyles.bigText}>Select the risk level:</Text>
                             <Slider
                             minimumValue={1}
                             maximumValue={10}
@@ -44,11 +45,11 @@ class HomeScreen extends React.Component {
                             />
                         </View>
                         <View>
-                            <Text style={styles.bigText}>Selected Risk: { this.props.riskState.riskLevel }</Text>
+                            <Text style={commonStyles.bigText}>Selected Risk: { this.props.riskState.riskLevel }</Text>
                         </View>
                         <View style={styles.buttonContainer}>
-                            <TouchableHighlight style={styles.button} onPress={ () => {this.setState({ showChart: !this.state.showChart })} }>
-                                <Text style={styles.buttonText}>
+                            <TouchableHighlight style={commonStyles.blueButton} onPress={ () => {this.setState({ showChart: !this.state.showChart })} }>
+                                <Text style={commonStyles.blueButtonText}>
                                     {!this.state.showChart ? 'Show Chart' : 'Show Table'}
                                 </Text>
                             </TouchableHighlight>
@@ -68,37 +69,11 @@ const mapStateToProps = ({ riskState }) => ({ riskState })
 export default connect(mapStateToProps, { changeRiskLevel })(HomeScreen)
 
 const styles = StyleSheet.create({
-    safeArea: {
-        flex: 1, 
-        backgroundColor: DEFAULT_COLOR
-    },
-    container: {
-        flex: 1,
-        backgroundColor: DEFAULT_COLOR,
-        paddingVertical: 20
-    },
     slider: {
         marginVertical: 20
-    },
-    content: {
-        paddingHorizontal: 20
-    },
-    bigText: {
-        fontSize: 18
     },
     buttonContainer: {
         flexDirection: 'row',
         marginVertical: 30
-    },
-    button: {
-        backgroundColor: LIGHT_BLUE_COLOR,
-        padding: 10,
-        borderRadius: 5,
-        flex: 1
-    },
-    buttonText: {
-        color: WHITE_COLOR,
-        fontSize: 16,
-        textAlign: 'center'
     }
 })
