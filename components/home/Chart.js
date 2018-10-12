@@ -47,7 +47,7 @@ class Chart extends React.Component {
                         const values = investmentsData.risks[riskLevel-1]
                         const labels = investmentsData.investments
                         
-                        for (let i = 0; i <= values.length; i++) {
+                        for (let i = 0; i <= values.length-1; i++) {
                             data.push([labels[i] + ' ' + values[i] + '%', values[i]])
                         }
                         return data

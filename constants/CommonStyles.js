@@ -18,6 +18,9 @@ export const commonStyles = StyleSheet.create({
     bigText: {
         fontSize: 18
     },
+    smallText: {
+        fontSize: 12
+    },  
     blueButton: {
         backgroundColor: LIGHT_BLUE_COLOR,
         padding: 10,
@@ -28,5 +31,15 @@ export const commonStyles = StyleSheet.create({
         color: WHITE_COLOR,
         fontSize: 16,
         textAlign: 'center'
+    },
+    containerCell: {
+        flex: 1, 
+        flexDirection: 'row'
+    },
+    cell: {
+        flex: 1, 
+        borderWidth: 1,
+        padding: 5,
+        alignItems: 'center'
     }
 })

@@ -6,6 +6,6 @@ import InvestmentsScreen from '../screens/InvestmentsScreen'
 export default createBottomTabNavigator(
     {
       Home: HomeScreen,
-      Investments: InvestmentsScreen
+      Portfolio: InvestmentsScreen
     }
   )

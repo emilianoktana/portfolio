@@ -6,28 +6,19 @@ import {
 } from 'react-native'
 
 import { SELECTED_ROW_COLOR, WHITE_COLOR } from '../../constants/Colors'
+import { commonStyles } from '../../constants/CommonStyles'
 
 export const TableRow = (props) => {
 
     const selectedBackground = (props.selected) ? SELECTED_ROW_COLOR : WHITE_COLOR
     
     return (
-        <View style={{ flex: 1, alignSelf: 'stretch', flexDirection: 'row', backgroundColor: selectedBackground }}>
+        <View style={[{ backgroundColor: selectedBackground }, commonStyles.containerCell ]}>
             {props.data.map((val, index) => 
-                <View key={index} style={styles.cell}>
+                <View key={index} style={commonStyles.cell}>
                     <Text>{ props.data[index] }</Text>
                 </View>)
             }
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    cell: {
-        flex: 1, 
-        alignSelf: 'stretch', 
-        borderWidth: 1,
-        padding: 5,
-        alignItems: 'center'
-    }
-})
