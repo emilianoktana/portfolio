@@ -19,10 +19,43 @@ import { commonStyles } from '../constants/CommonStyles'
 import { connect } from 'react-redux'
 class InvestmentsScreen extends React.Component {
 
+    state = { 
+        tableValues: investmentsData.investments.map((val, index) => {
+            return ({
+                investment: val,
+                currentAmount: 0,
+                difference: '',
+                newAmount: 0
+            })
+        })
+    }
+
+    setCurrentAmountValue = (amount, investment) => {   
+        console.log(amount)
+        /*const newValues = this.state.tableValues.map(item => {
+            if (item.investment === investment) {
+                return {
+                    investment: item.investment,
+                    currentAmount: parseInt(amount),
+                    difference: item.difference,
+                    newAmount: item.newAmount
+                }
+            }
+            return { ...item }
+        })
+        this.setState({
+            ...this.state, tableValues: newValues
+        })*/
+    }
+
     renderIdealPercentagesRow = () => {
         return (
             <TableRow data={investmentsData.risks[this.props.riskState.riskLevel]}/>
         )
+    }
+
+    rebalanceAction = () => {
+        console.log(this.state)
     }
 
     render () {
@@ -44,20 +77,20 @@ class InvestmentsScreen extends React.Component {
                                         <View key={index} style={commonStyles.containerCell}>
                                             <View style={commonStyles.cell}>
                                                 <Text style={commonStyles.smallText}>{ val }</Text>
-                                                <TextInput style={styles.textInput}/>
+                                                <TextInput style={styles.textInput} onChange={(text) => { this.setCurrentAmountValue(text, val) }} />
                                             </View>
                                             <View style={commonStyles.cell}>
-                                                <TextInput style={styles.textInput}/>
+                                                <Text></Text>
                                             </View>
                                             <View style={commonStyles.cell}>
-                                                <TextInput style={styles.textInput}/>
+                                                <Text></Text>
                                             </View>
                                         </View>
                                     )
                                 })}
                             </View>
                             <View style={styles.buttonContainer}>
-                                <TouchableHighlight style={commonStyles.blueButton}>
+                                <TouchableHighlight style={commonStyles.blueButton} onPress={this.rebalanceAction}>
                                     <Text style={commonStyles.blueButtonText}>
                                         Rebalance
                                     </Text>
