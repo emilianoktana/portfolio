@@ -58,12 +58,14 @@ class InvestmentsScreen extends React.Component {
 
     calculateDifferencesForEnteredAmounts = (totalAmount) => {
         const newValues = this.state.tableValues.map((item, index) => {
-            var currentPercentage = (item.currentAmount * 100) / totalAmount
-            var idealPercentage = investmentsData.risks[this.props.riskState.riskLevel][index]
+            var currentPercentage = ((item.currentAmount * 100) / totalAmount).toFixed(2)
+            var idealPercentage = investmentsData.risks[this.props.riskState.riskLevel-1][index]
             var difference = 0
+            var newAmount = 0
 
             if (idealPercentage > 0) {
-                difference = (idealPercentage * item.currentAmount) / currentPercentage
+                newAmount = ((idealPercentage * item.currentAmount) / currentPercentage).toFixed(2)
+                difference = parseFloat((item.currentAmount - newAmount).toFixed(2))
             } else {
                 difference = item.currentAmount
             }
@@ -72,10 +74,10 @@ class InvestmentsScreen extends React.Component {
                 investment: item.investment,
                 currentAmount: item.currentAmount,
                 difference: difference,
-                newAmount: item.newAmount
+                newAmount: newAmount
             }
         })
-
+        console.log(newValues)
         this.setState({
             ...this.state, tableValues: newValues
         })
@@ -91,7 +93,7 @@ class InvestmentsScreen extends React.Component {
 
     renderIdealPercentagesRow = () => {
         return (
-            <TableRow data={investmentsData.risks[this.props.riskState.riskLevel]}/>
+            <TableRow data={investmentsData.risks[this.props.riskState.riskLevel-1]}/>
         )
     }
 
