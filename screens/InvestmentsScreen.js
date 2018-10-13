@@ -28,7 +28,7 @@ class InvestmentsScreen extends React.Component {
                 newAmount: 0
             })
         }),
-        valuesForTransfer: ''
+        transfers: []
     }
 
     setCurrentAmountValue = (amount, investment) => {   
@@ -59,14 +59,14 @@ class InvestmentsScreen extends React.Component {
 
     calculateDifferencesForEnteredAmounts = (totalAmount) => {
         const newValues = this.state.tableValues.map((item, index) => {
-            var currentPercentage = ((item.currentAmount * 100) / totalAmount).toFixed(2)
+            var currentPercentage = ((item.currentAmount * 100) / totalAmount).toFixed(1)
             var idealPercentage = investmentsData.risks[this.props.riskState.riskLevel-1][index]
             var difference = 0
             var newAmount = 0
 
             if (idealPercentage > 0) {
-                newAmount = ((idealPercentage * item.currentAmount) / currentPercentage).toFixed(2)
-                difference = parseFloat((item.currentAmount - newAmount).toFixed(2))
+                newAmount = ((idealPercentage * item.currentAmount) / currentPercentage).toFixed(1)
+                difference = parseFloat((item.currentAmount - newAmount).toFixed(1))
             } else {
                 difference = item.currentAmount
             }
@@ -79,38 +79,88 @@ class InvestmentsScreen extends React.Component {
             }
         })
 
-        const transfers = []
+        this.setState({ ...this.state, tableValues: newValues }, () => this.calculateTransfers())
+    }
 
-        this.setState({
-            ...this.state, tableValues: newValues, valuesForTransfer: transfers
+    calculateTransfers = () => {
+        const investmentsToRemove = []
+        const investmentsToAdd = []
+        const recommendedTransfers = []
+
+        const { tableValues } = this.state
+        // Separate the categories that I need to add $ from the ones that I need to remove $
+        tableValues.map((item) => {
+            if (item.difference < 0) {
+                investmentsToAdd.push({ ...item })
+            } else {
+                investmentsToRemove.push({ ...item })
+            }
+        })
+    
+        investmentsToRemove.sort((a, b) => (a.difference) - (b.difference)).reverse()
+        investmentsToAdd.sort((a, b) => (a.difference) - (b.difference))
+        
+        investmentsToAdd.forEach((toAdd) => {
+            var index = 0
+            
+            while (toAdd.difference < 0 && investmentsToRemove.length > index) {
+                if ((toAdd.difference + investmentsToRemove[index].difference) > 0) {
+                    recommendedTransfers.push(`- Transfer ${Math.abs(toAdd.difference).toFixed(1)} from ${toAdd.investment} to ${investmentsToRemove[index].investment}`)
+                    investmentsToRemove[index].difference =  toAdd.difference + investmentsToRemove[index].difference
+                    toAdd.difference = 0
+                } else if (investmentsToRemove[index].difference > 0) {
+                    recommendedTransfers.push(`- Transfer ${investmentsToRemove[index].difference.toFixed(1)} from ${investmentsToRemove[index].investment} to ${toAdd.investment}`)
+                    toAdd.difference = toAdd.difference + investmentsToRemove[index].difference
+                    investmentsToRemove[index].difference = 0
+                }
+                index++
+            }
+            
         })
 
-        // Items that needs to remove all the amount
-        var investmentsToRemoveAmount = newValues.filter(item => item.difference === item.currentAmount)
-        // Items that needs a transfer
-        var investmentsToAddAmount = newValues.filter(item => item.difference < 0)
-
-        /*investmentsToRemoveAmount.forEach((toRemove) => {
-            var firstInvestmentToAdd = investmentsToAddAmount[0]
-            var transferAmount = 0
-
-            while (toRemove.difference > 0) {
-                if (toRemove.difference < Math.abs(firstInvestmentToAdd.difference)) {
-                    transferAmount = toRemove.difference
-                } else {
-                    transferAmount = toRemove.difference - Math.abs(firstInvestmentToAdd.difference)
-                }
-
-                toRemove.difference = toRemove.difference - transferAmount
-                transfers.push('Transfer ' + transferAmount + ' from ' + toRemove.investment + ' to ' + firstInvestmentToAdd.investment)
-
-                if (firstInvestmentToAdd.newAmount === toRemove.difference + transferAmount) {
-                    investmentsToAddAmount.shift()
-                }
+        /*investmentsToRemove.forEach((toRemove) => {
+            
+            // Get the first investment I can remove money from
+            var first = investmentsToAdd[0]
+            // Get the total amount I must transfer
+            var firstTotalTransfer = first.difference
+            // Get the total amount I have to transfer for this investment (toRemove)
+            var toRemoveAmount = toRemove.difference
+            // Calculate Investment
+            
+            if (first.investment === 'Insurance') {
+                console.log('pepe')
             }
+
+            var calculatedInvestment = (firstTotalTransfer + toRemoveAmount)
+
+            // If its < 0, I have to add more money to achieve the ideal amount
+            if (calculatedInvestment < 0) {
+                // Register a new transfer
+                recommendedTransfers.push(`- Transfer ${toRemoveAmount.toFixed(1)} from ${toRemove.investment} to ${first.investment}`)
+                // Update the values
+                toRemove.difference = 0
+                first.difference = calculatedInvestment
+                
+                while (toRemove.difference > 0 && investmentsToAdd.length > 0) {
+                    calculatedInvestment = (firstTotalTransfer + toRemove.difference)
+                    if (calculatedInvestment < 0) {
+                        recommendedTransfers.push(`- Transfer ${toRemove.difference.toFixed(1)} from ${toRemove.investment} to ${first.investment}`)
+                    } else {
+                       investmentsToAdd.shift()
+                    }
+                }
+            } else {
+                let amount = toRemoveAmount - calculatedInvestment
+                recommendedTransfers.push(`- Transfer ${amount.toFixed(1)} from ${toRemove.investment} to ${first.investment}`)
+                toRemove.difference = toRemove.difference - amount
+                
+                first.difference = 0
+            }
+            
         })*/
         
-        console.log(transfers)
+        this.setState({ ...this.state, transfers: recommendedTransfers })
     }
 
     rebalanceAction = () => {
@@ -118,7 +168,6 @@ class InvestmentsScreen extends React.Component {
         const totalAmount = this.getTotalAmount()
         // Calculate all the differences using the ideal percentages
         this.calculateDifferencesForEnteredAmounts(totalAmount)
-
     }
 
     renderIdealPercentagesRow = () => {
@@ -150,7 +199,7 @@ class InvestmentsScreen extends React.Component {
                                             </View>
                                             <View style={commonStyles.cell}>
                                                 <Text>
-                                                    {(Math.abs(this.state.tableValues[index].difference) === this.state.tableValues[index].currentAmount) ? `-${Math.abs(this.state.tableValues[index].difference)}` : `+${Math.abs(this.state.tableValues[index].difference)}` }
+                                                    {(this.state.tableValues[index].difference < 0) ? `+${Math.abs(this.state.tableValues[index].difference)}` : `-${Math.abs(this.state.tableValues[index].difference)}` }
                                                 </Text>
                                             </View>
                                             <View style={commonStyles.cell}>
@@ -168,6 +217,13 @@ class InvestmentsScreen extends React.Component {
                                         Rebalance
                                     </Text>
                                 </TouchableHighlight>
+                            </View>
+                            <View style={styles.transfersContainer}>
+                                {this.state.transfers.map((val, index) => {
+                                    return (
+                                        <Text style={styles.transferText} key={index}>{val}</Text>
+                                    )
+                                })}
                             </View>
                         </View>
                     </ScrollView>
@@ -199,6 +255,13 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         flexDirection: 'row'
+    },
+    transfersContainer: {
+        backgroundColor: WHITE_COLOR,
+        marginTop: 20
+    },
+    transferText: {
+        lineHeight: 20
     }
 })
 
