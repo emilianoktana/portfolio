@@ -6,7 +6,8 @@ import {
     StyleSheet,
     ScrollView,
     TextInput,
-    TouchableHighlight
+    TouchableHighlight,
+    KeyboardAvoidingView
 } from 'react-native'
 
 import { TableRow } from '../components/common/TableRow'
@@ -86,8 +87,8 @@ class InvestmentsScreen extends React.Component {
         const investmentsToRemove = []
         const investmentsToAdd = []
         const recommendedTransfers = []
-
         const { tableValues } = this.state
+
         // Separate the categories that I need to add $ from the ones that I need to remove $
         tableValues.map((item) => {
             if (item.difference < 0) {
@@ -96,20 +97,29 @@ class InvestmentsScreen extends React.Component {
                 investmentsToRemove.push({ ...item })
             }
         })
-    
+
+        // Sort both arrays
         investmentsToRemove.sort((a, b) => (a.difference) - (b.difference)).reverse()
         investmentsToAdd.sort((a, b) => (a.difference) - (b.difference))
         
+        // Loop the investments I must add money
         investmentsToAdd.forEach((toAdd) => {
             var index = 0
-            
+
+            // While the account has money, transfer it to another
             while (toAdd.difference < 0 && investmentsToRemove.length > index) {
+                // The value I can transfer is bigger than the amount I need
                 if ((toAdd.difference + investmentsToRemove[index].difference) > 0) {
+                    // Register the transfer
                     recommendedTransfers.push(`- Transfer ${Math.abs(toAdd.difference).toFixed(1)} from ${toAdd.investment} to ${investmentsToRemove[index].investment}`)
+                    // Update the values 
                     investmentsToRemove[index].difference =  toAdd.difference + investmentsToRemove[index].difference
                     toAdd.difference = 0
                 } else if (investmentsToRemove[index].difference > 0) {
+                    // The value I can transfer is smaller than the amount I need to transfer, so I transfer all the money
+                    // Register the transfer
                     recommendedTransfers.push(`- Transfer ${investmentsToRemove[index].difference.toFixed(1)} from ${investmentsToRemove[index].investment} to ${toAdd.investment}`)
+                    // Update the values
                     toAdd.difference = toAdd.difference + investmentsToRemove[index].difference
                     investmentsToRemove[index].difference = 0
                 }
@@ -117,49 +127,8 @@ class InvestmentsScreen extends React.Component {
             }
             
         })
-
-        /*investmentsToRemove.forEach((toRemove) => {
-            
-            // Get the first investment I can remove money from
-            var first = investmentsToAdd[0]
-            // Get the total amount I must transfer
-            var firstTotalTransfer = first.difference
-            // Get the total amount I have to transfer for this investment (toRemove)
-            var toRemoveAmount = toRemove.difference
-            // Calculate Investment
-            
-            if (first.investment === 'Insurance') {
-                console.log('pepe')
-            }
-
-            var calculatedInvestment = (firstTotalTransfer + toRemoveAmount)
-
-            // If its < 0, I have to add more money to achieve the ideal amount
-            if (calculatedInvestment < 0) {
-                // Register a new transfer
-                recommendedTransfers.push(`- Transfer ${toRemoveAmount.toFixed(1)} from ${toRemove.investment} to ${first.investment}`)
-                // Update the values
-                toRemove.difference = 0
-                first.difference = calculatedInvestment
-                
-                while (toRemove.difference > 0 && investmentsToAdd.length > 0) {
-                    calculatedInvestment = (firstTotalTransfer + toRemove.difference)
-                    if (calculatedInvestment < 0) {
-                        recommendedTransfers.push(`- Transfer ${toRemove.difference.toFixed(1)} from ${toRemove.investment} to ${first.investment}`)
-                    } else {
-                       investmentsToAdd.shift()
-                    }
-                }
-            } else {
-                let amount = toRemoveAmount - calculatedInvestment
-                recommendedTransfers.push(`- Transfer ${amount.toFixed(1)} from ${toRemove.investment} to ${first.investment}`)
-                toRemove.difference = toRemove.difference - amount
-                
-                first.difference = 0
-            }
-            
-        })*/
         
+        // Set the transfers on the state so I can show them in the UI
         this.setState({ ...this.state, transfers: recommendedTransfers })
     }
 
@@ -179,55 +148,57 @@ class InvestmentsScreen extends React.Component {
     render () {
         return (
             <SafeAreaView style={commonStyles.safeArea}>
-                <View style={commonStyles.container}>
-                    <ScrollView style={commonStyles.content}>
-                        <Text style={commonStyles.bigText}>Risk Level: {this.props.riskState.riskLevel}</Text>
-                        <View style={styles.table}>
-                            <TableRow data={investmentsData.investments}/>
-                            {this.renderIdealPercentagesRow()}
-                        </View>
-                        <View>
-                            <Text style={commonStyles.bigText}>Enter your current porfolio:</Text>
+                <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding" enabled>
+                    <View style={commonStyles.container}>
+                        <ScrollView style={commonStyles.content}>
+                            <Text style={commonStyles.bigText}>Risk Level: {this.props.riskState.riskLevel}</Text>
                             <View style={styles.table}>
-                                <TableRow data={['Current $', 'Diff', 'New $']} />
-                                {investmentsData.investments.map((val, index) => {
-                                    return (
-                                        <View key={index} style={commonStyles.containerCell}>
-                                            <View style={commonStyles.cell}>
-                                                <Text style={commonStyles.smallText}>{ val }</Text>
-                                                <TextInput style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
-                                            </View>
-                                            <View style={commonStyles.cell}>
-                                                <Text>
-                                                    {(this.state.tableValues[index].difference < 0) ? `+${Math.abs(this.state.tableValues[index].difference)}` : `-${Math.abs(this.state.tableValues[index].difference)}` }
-                                                </Text>
-                                            </View>
-                                            <View style={commonStyles.cell}>
-                                                <Text>
-                                                    {this.state.tableValues[index].newAmount}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
-                                })}
+                                <TableRow data={investmentsData.investments}/>
+                                {this.renderIdealPercentagesRow()}
                             </View>
-                            <View style={styles.buttonContainer}>
-                                <TouchableHighlight style={commonStyles.blueButton} onPress={this.rebalanceAction}>
-                                    <Text style={commonStyles.blueButtonText}>
-                                        Rebalance
-                                    </Text>
-                                </TouchableHighlight>
+                            <View>
+                                <Text style={commonStyles.bigText}>Enter your current porfolio:</Text>
+                                <View style={styles.table}>
+                                    <TableRow data={['Current $', 'Diff', 'New $']} />
+                                    {investmentsData.investments.map((val, index) => {
+                                        return (
+                                            <View key={index} style={commonStyles.containerCell}>
+                                                <View style={commonStyles.cell}>
+                                                    <Text style={commonStyles.smallText}>{ val }</Text>
+                                                    <TextInput style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
+                                                </View>
+                                                <View style={commonStyles.cell}>
+                                                    <Text>
+                                                        {(this.state.tableValues[index].difference < 0) ? `+${Math.abs(this.state.tableValues[index].difference)}` : `-${Math.abs(this.state.tableValues[index].difference)}` }
+                                                    </Text>
+                                                </View>
+                                                <View style={commonStyles.cell}>
+                                                    <Text>
+                                                        {this.state.tableValues[index].newAmount}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        )
+                                    })}
+                                </View>
+                                <View style={styles.buttonContainer}>
+                                    <TouchableHighlight style={commonStyles.blueButton} onPress={this.rebalanceAction}>
+                                        <Text style={commonStyles.blueButtonText}>
+                                            Rebalance
+                                        </Text>
+                                    </TouchableHighlight>
+                                </View>
+                                <View style={styles.transfersContainer}>
+                                    {this.state.transfers.map((val, index) => {
+                                        return (
+                                            <Text style={styles.transferText} key={index}>{val}</Text>
+                                        )
+                                    })}
+                                </View>
                             </View>
-                            <View style={styles.transfersContainer}>
-                                {this.state.transfers.map((val, index) => {
-                                    return (
-                                        <Text style={styles.transferText} key={index}>{val}</Text>
-                                    )
-                                })}
-                            </View>
-                        </View>
-                    </ScrollView>
-                </View>
+                        </ScrollView>
+                    </View>
+                </KeyboardAvoidingView>
             </SafeAreaView>
         )
     }
@@ -245,12 +216,14 @@ const styles = StyleSheet.create({
         alignSelf: 'stretch', 
         borderWidth: 1,
         padding: 5,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     textInput: {
         flex: 1,
         backgroundColor: WHITE_COLOR,
         width: 100,
+        height: 20,
         textAlign: 'center'
     },
     buttonContainer: {

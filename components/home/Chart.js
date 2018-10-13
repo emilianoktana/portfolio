@@ -13,7 +13,8 @@ class Chart extends React.Component {
 
         const chartConfig = {
                 chart: {
-                    type: 'pie'
+                    type: 'pie',
+                    height: 500
                 },
                 title: {
                     text: 'Chart values'
