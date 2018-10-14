@@ -111,7 +111,7 @@ class InvestmentsScreen extends React.Component {
                 // The value I can transfer is bigger than the amount I need
                 if ((toAdd.difference + investmentsToRemove[index].difference) > 0) {
                     // Register the transfer
-                    recommendedTransfers.push(`- Transfer ${Math.abs(toAdd.difference).toFixed(1)} from ${toAdd.investment} to ${investmentsToRemove[index].investment}`)
+                    recommendedTransfers.push(`- Transfer ${Math.abs(toAdd.difference).toFixed(1)} from ${investmentsToRemove[index].investment} to ${toAdd.investment}`)
                     // Update the values 
                     investmentsToRemove[index].difference =  toAdd.difference + investmentsToRemove[index].difference
                     toAdd.difference = 0
