@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { Dimensions } from 'react-native'
 import investmentsData from '../../investmentsData'
 
 import ChartView from 'react-native-highcharts'
@@ -10,10 +10,12 @@ class Chart extends React.Component {
 
     render () {
         const { riskLevel } = this.props.riskState
-
+        const windowWidth = Dimensions.get('window').width - 40
+        
         const chartConfig = {
                 chart: {
-                    type: 'pie'
+                    type: 'pie',
+                    width: windowWidth
                 },
                 title: {
                     text: 'Chart values'
@@ -23,7 +25,7 @@ class Chart extends React.Component {
                         dataLabels: {
                             distance: -40,
                             color: 'white',
-                            style: { fontSize: 14 }
+                            style: { fontSize: 13 }
                         }
                     }
                 },
@@ -41,7 +43,7 @@ class Chart extends React.Component {
                     },
                     dataLabels: {
                         enabled: true,
-                        y: -10
+                        y: -5
                     },
                     data: (function () {
                         let data = []
@@ -49,7 +51,7 @@ class Chart extends React.Component {
                         const labels = investmentsData.investments
                         
                         for (let i = 0; i <= values.length-1; i++) {
-                            data.push([labels[i] + ' ' + values[i] + '%', values[i]])
+                            data.push([labels[i].substr(0, 3) + ' ' + values[i] + '%', values[i]])
                         }
                         return data
                     }())
@@ -67,7 +69,7 @@ class Chart extends React.Component {
         }
 
         return (
-            <ChartView style={{ height: 500 }} config={chartConfig} options={options} />
+            <ChartView style={{ height: 500, width: windowWidth }} config={chartConfig} options={options} />
         )
     }
 }

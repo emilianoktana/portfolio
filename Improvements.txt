@@ -6,3 +6,9 @@ IMPROVEMENTS
 - Remove underline from text input when run on Android
     This was fixed by using underlineColorAndroid prop on the TextInput component
 
+- Added eslint configuration
+
+- Added points to the font size of pie chart labels, also has to cut the label text to render the chart centered on the wrapper
+
+- Added a validation, when the user doesn't complete all the inputs, any action is triggered until all the inputs are filled.
+    This was fixed on the Investments screen, validating with the totalAmount variable, when it's -1 some of the inputs isn't complete.

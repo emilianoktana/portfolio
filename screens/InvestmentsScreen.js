@@ -24,7 +24,7 @@ class InvestmentsScreen extends React.Component {
         tableValues: investmentsData.investments.map((val, index) => {
             return ({
                 investment: val,
-                currentAmount: 0,
+                currentAmount: '',
                 difference: 0,
                 newAmount: 0
             })
@@ -52,9 +52,16 @@ class InvestmentsScreen extends React.Component {
 
     getTotalAmount = () => {
         let totalAmount = 0
+        let counterInputsCompleted = 0
         this.state.tableValues.forEach((element) => {
-            totalAmount += element.currentAmount
+            if (element.currentAmount !== '') { 
+                totalAmount += element.currentAmount
+                counterInputsCompleted++
+            }
         })
+        if (counterInputsCompleted < investmentsData.investments.length) {
+            return -1
+        }
         return totalAmount
     }
 
@@ -141,14 +148,38 @@ class InvestmentsScreen extends React.Component {
     rebalanceAction = () => {
         // Get the total amount
         const totalAmount = this.getTotalAmount()
-        // Calculate all the differences using the ideal percentages
-        this.calculateDifferencesForEnteredAmounts(totalAmount)
+        
+        // If the total amount is -1, there are incomplete inputs that needs to be completed.
+        if (totalAmount === -1) {
+            alert('Please, complete all the inputs before you trigger rebalance action.')
+        } else {
+            // Calculate all the differences using the ideal percentages
+            this.calculateDifferencesForEnteredAmounts(totalAmount)
+        }
     }
 
     renderIdealPercentagesRow = () => {
         return (
             <TableRow data={investmentsData.risks[this.props.riskState.riskLevel-1]}/>
         )
+    }
+
+    componentDidUpdate (prevProps) {
+        // Reset the values when the risk level change
+        if (prevProps.riskState.riskLevel !== this.props.riskState.riskLevel) {
+            const newValues = this.state.tableValues.map(item => {
+                return { ...item,
+                    investment: item.investment,
+                    currentAmount: '',
+                    difference: 0,
+                    newAmount: 0
+                }
+            })
+        
+            this.setState({
+                ...this.state, tableValues: newValues, transfers: []
+            })
+        }
     }
 
     render () {
@@ -171,7 +202,7 @@ class InvestmentsScreen extends React.Component {
                                             <View key={index} style={commonStyles.containerCell}>
                                                 <View style={commonStyles.cell}>
                                                     <Text style={commonStyles.smallText}>{ val }</Text>
-                                                    <TextInput underlineColorAndroid='transparent' style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
+                                                    <TextInput value={this.state.tableValues[index].currentAmount.toString()} underlineColorAndroid='transparent' style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
                                                 </View>
                                                 <View style={commonStyles.cell}>
                                                     <Text>
