@@ -8,6 +8,7 @@ This project was created with Expo. In the next sections you'll find the necessa
 * [Requirements](#requirements)
 * [Guide](#guide)
 * [Run the project](#run-the-project)
+* [Tests](#tests)
 * [Technologies](#technologies)
 
 ## Demo
@@ -48,6 +49,12 @@ Run this command inside the project folder:
 $ expo start
 ```
 A new browser window will appear with Expo CLI panel, use the option called "Run on iOS simulator" or "Run on Android device/emulator". This option will launch an emulator if you don't have a real device connected.
+
+## Tests
+In order to run tests use this command inside the project folder:
+```
+$ npm test
+```
 
 ## Technologies
 1. React Native (JavaScript ES6) wrapped inside Expo 
