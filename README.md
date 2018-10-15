@@ -2,6 +2,13 @@
 
 This project was created with Expo. In the next sections you'll find the necessary information to run and use the application.
 
+## Table of contents
+* [Installation](#installation)
+* [Requirements](#requirements)
+* [Guide](#guide)
+* [Run the project](#run-the-project)
+* [Technologies](#technologies)
+
 ## Installation
 
 ### Requirements
