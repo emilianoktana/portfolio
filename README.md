@@ -3,17 +3,21 @@
 This project was created with Expo. In the next sections you'll find the necessary information to run and use the application.
 
 ## Table of contents
+* [Demo](#demo)
 * [Installation](#installation)
 * [Requirements](#requirements)
 * [Guide](#guide)
 * [Run the project](#run-the-project)
 * [Technologies](#technologies)
 
+## Demo
+To see the demo video, open the file located inside demo folder.
+
 ## Installation
 
 ### Requirements
 Some dependencies must be installed before you run the project:
-* Expo CLI
+* Expo CLI (To install Expo CLI, run npm install -g expo-cli on your terminal, after you have Node and npm installed)
 * XCode
 * NodeJS 8.6.1 or greater
 * npm 4.6.1
