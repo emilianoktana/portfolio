@@ -8,6 +8,9 @@ IMPROVEMENTS
 - Added points to the font size of pie chart labels, also has to cut the label text to render the chart centered on the wrapper
 
 - Added a validation, when the user doesn't complete all the inputs, any action is triggered until all the inputs are filled.
-    This was fixed on the Investments screen, validating with the totalAmount variable, when it's -1 some of the inputs isn't complete.
+    This was fixed on the InvestmentsScreen, validating with the totalAmount variable, when it's -1 some of the inputs isn't complete.
 
-- Added some fixes to the UI
+- Added some improvements to the UI
+
+- Added validation to InvestmentsScreen, when there is a non-numeric value on on the inputs, the calculate action will not trigger until inputs has numeric values.
+    This was fixed by using a regular expression everytime the user modifies an input. When there is a text value, I don't set the state.

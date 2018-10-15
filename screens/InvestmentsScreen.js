@@ -35,11 +35,14 @@ class InvestmentsScreen extends React.Component {
     setCurrentAmountValue = (amount, investment) => {
         const newValues = this.state.tableValues.map(item => {
             if (item.investment === investment) {
-                return {
-                    investment: item.investment,
-                    currentAmount: (amount === '' ? '' : parseFloat(amount)),
-                    difference: item.difference,
-                    newAmount: item.newAmount200
+                // Check if the value is numeric 
+                if (/^\d+$/.test(amount)) {
+                    return {
+                        investment: item.investment,
+                        currentAmount: (amount === '' ? '' : parseFloat(amount)),
+                        difference: item.difference,
+                        newAmount: item.newAmount200
+                    }
                 }
             }
             return { ...item }
@@ -149,9 +152,9 @@ class InvestmentsScreen extends React.Component {
         // Get the total amount
         const totalAmount = this.getTotalAmount()
         
-        // If the total amount is -1, there are incomplete inputs that needs to be completed.
+        // If the total amount is -1, there are incomplete inputs that needs to be completed or some of the values are non-numeric
         if (totalAmount === -1) {
-            alert('Please, complete all the inputs before you trigger rebalance action.')
+            alert('Please, all inputs are complete and have numeric values.')
         } else {
             // Calculate all the differences using the ideal percentages
             this.calculateDifferencesForEnteredAmounts(totalAmount)
@@ -202,7 +205,7 @@ class InvestmentsScreen extends React.Component {
                                             <View key={index} style={commonStyles.containerCell}>
                                                 <View style={commonStyles.cell}>
                                                     <Text style={commonStyles.smallText}>{ val }</Text>
-                                                    <TextInput value={this.state.tableValues[index].currentAmount.toString()} underlineColorAndroid='transparent' style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
+                                                    <TextInput keyboardType='numeric' value={this.state.tableValues[index].currentAmount.toString()} underlineColorAndroid='transparent' style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
                                                 </View>
                                                 <View style={commonStyles.cell}>
                                                     <Text>
