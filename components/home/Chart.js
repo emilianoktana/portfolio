@@ -13,8 +13,7 @@ class Chart extends React.Component {
 
         const chartConfig = {
                 chart: {
-                    type: 'pie',
-                    height: 500
+                    type: 'pie'
                 },
                 title: {
                     text: 'Chart values'
@@ -23,7 +22,8 @@ class Chart extends React.Component {
                     pie: {
                         dataLabels: {
                             distance: -40,
-                            color: 'white'
+                            color: 'white',
+                            style: { fontSize: 14 }
                         }
                     }
                 },
@@ -67,17 +67,10 @@ class Chart extends React.Component {
         }
 
         return (
-            <ChartView style={{ height:500 }} config={chartConfig} options={options} />
+            <ChartView style={{ height: 500 }} config={chartConfig} options={options} />
         )
     }
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      alignItems: 'center'
-    }
-  });
 
 const mapStateToProps = ({ riskState }) => ({ riskState })
 

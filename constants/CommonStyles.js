@@ -38,7 +38,7 @@ export const commonStyles = StyleSheet.create({
     },
     cell: {
         flex: 1, 
-        borderWidth: 1,
+        borderBottomWidth: 1,
         padding: 5,
         alignItems: 'center'
     }

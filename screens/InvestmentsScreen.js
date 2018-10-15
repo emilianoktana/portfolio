@@ -25,7 +25,7 @@ class InvestmentsScreen extends React.Component {
             return ({
                 investment: val,
                 currentAmount: 0,
-                difference: '',
+                difference: 0,
                 newAmount: 0
             })
         }),
@@ -171,7 +171,7 @@ class InvestmentsScreen extends React.Component {
                                             <View key={index} style={commonStyles.containerCell}>
                                                 <View style={commonStyles.cell}>
                                                     <Text style={commonStyles.smallText}>{ val }</Text>
-                                                    <TextInput style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
+                                                    <TextInput underlineColorAndroid='transparent' style={styles.textInput} onChangeText={(text) => { this.setCurrentAmountValue(text, val) }} />
                                                 </View>
                                                 <View style={commonStyles.cell}>
                                                     <Text>
