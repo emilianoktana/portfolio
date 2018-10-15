@@ -60,14 +60,20 @@ class InvestmentsScreen extends React.Component {
 
     calculateDifferencesForEnteredAmounts = (totalAmount) => {
         const newValues = this.state.tableValues.map((item, index) => {
-            var currentPercentage = ((item.currentAmount * 100) / totalAmount).toFixed(1)
+            var currentPercentage = (item.currentAmount === 0 ? 0 : ((item.currentAmount * 100) / totalAmount)).toFixed(1)
             var idealPercentage = investmentsData.risks[this.props.riskState.riskLevel-1][index]
             var difference = 0
             var newAmount = 0
 
             if (idealPercentage > 0) {
-                newAmount = ((idealPercentage * item.currentAmount) / currentPercentage).toFixed(1)
-                difference = parseFloat((item.currentAmount - newAmount).toFixed(1))
+                if (currentPercentage == 0) {
+                    newAmount = ((idealPercentage * totalAmount) / 100)
+                    difference = -Math.abs(newAmount)
+                } else {
+                    newAmount = ((idealPercentage * item.currentAmount) / currentPercentage).toFixed(1)
+                    difference = parseFloat((item.currentAmount - newAmount).toFixed(1))
+                }
+                
             } else {
                 difference = item.currentAmount
             }
@@ -182,7 +188,7 @@ class InvestmentsScreen extends React.Component {
                                     })}
                                 </View>
                                 <View style={styles.buttonContainer}>
-                                    <TouchableHighlight style={commonStyles.blueButton} onPress={this.rebalanceAction}>
+                                    <TouchableHighlight style={commonStyles.blueButton} disable={!this.state.inputsCompleted} onPress={this.rebalanceAction}>
                                         <Text style={commonStyles.blueButtonText}>
                                             Rebalance
                                         </Text>
