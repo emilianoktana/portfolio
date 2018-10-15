@@ -10,11 +10,13 @@
     "test": "node_modules/.bin/jest"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "testURL": "http://localhost/"
   },
   "dependencies": {
     "expo": "^30.0.1",
-    "react": "16.3.1",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
     "react-native": "https://github.com/expo/react-native/archive/sdk-30.0.0.tar.gz",
     "react-native-highcharts": "^1.0.2",
     "react-native-vector-icons": "^6.0.2",
@@ -25,6 +27,8 @@
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "babel-preset-react-native": "^4.0.1",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.6.0",
     "eslint": "^5.6.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-config-standard-react": "^7.0.2",
