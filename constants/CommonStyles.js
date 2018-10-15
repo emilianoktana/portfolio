@@ -40,6 +40,7 @@ export const commonStyles = StyleSheet.create({
         flex: 1, 
         borderBottomWidth: 1,
         padding: 5,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center'
     }
 })

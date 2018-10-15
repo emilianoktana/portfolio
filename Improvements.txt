@@ -1,8 +1,5 @@
 IMPROVEMENTS 
 
-- When the input is empty, use 0 as default value for currentAmount.
-    This was fixed by setting difference value as 0 on the state.
-
 - Remove underline from text input when run on Android
     This was fixed by using underlineColorAndroid prop on the TextInput component
 
@@ -12,3 +9,5 @@ IMPROVEMENTS
 
 - Added a validation, when the user doesn't complete all the inputs, any action is triggered until all the inputs are filled.
     This was fixed on the Investments screen, validating with the totalAmount variable, when it's -1 some of the inputs isn't complete.
+
+- Added some fixes to the UI

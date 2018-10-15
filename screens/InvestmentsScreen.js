@@ -32,14 +32,14 @@ class InvestmentsScreen extends React.Component {
         transfers: []
     }
 
-    setCurrentAmountValue = (amount, investment) => {   
+    setCurrentAmountValue = (amount, investment) => {
         const newValues = this.state.tableValues.map(item => {
             if (item.investment === investment) {
                 return {
                     investment: item.investment,
-                    currentAmount: parseFloat(amount),
+                    currentAmount: (amount === '' ? '' : parseFloat(amount)),
                     difference: item.difference,
-                    newAmount: item.newAmount
+                    newAmount: item.newAmount200
                 }
             }
             return { ...item }
